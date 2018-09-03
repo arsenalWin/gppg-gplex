@@ -1,0 +1,2 @@
+gplex "calculator.lex"
+pause

@@ -1,0 +1,129 @@
+/*
+=============================================================================
+NFSA Summary for input file <calculator.lex>
+=============================================================================
+Total NFSA states = 187
+Number of Start Conditions = 1
+Start condition INITIAL:
+  number of patterns = 34, number of nfsa states = 130, accept states = 34
+=============================================================================
+GPLEX: NFSA built.   14 msec
+=============================================================================
+GPLEX: DFSA built.   14 msec
+=============================================================================
+GPLEX: DFSA minimized.   18 msec
+=============================================================================
+GPLEX: Shortest strings found.    1 msec
+=============================================================================
+DFSA Summary
+=============================================================================
+Number of dfsa instances = 1
+Start condition INITIAL:
+  number of dfsa states = 74, number of accept states = 69
+=============================================================================
+GPLEX: C# file emitted.   23 msec
+=============================================================================
+GPLEX Summary
+=============================================================================
+Total number of states = 57, total accept states = 53, backup states = 2
+Original state number was 75, minimized machine has 57 states
+Compression summary: used 743 nextstate entries, plus 125 map entries
+- Uncompressed automaton would have 63,504,384 nextstate entries
+- Input characters are packed into 36 equivalence classes
+- CharClass compression 100.00%, 36 entries Vs 1,114,112
+- Nextstate table compression 63.79%, 743 entries Vs 2,052
+- CharacterMap compression is 99.99%, 125 entries Vs 1,114,112
+- Decision tree depth is 1
+
+Backup state report --- 
+In <0>, after "0" automaton could accept ""."?[0-9]+{EXP}?" in state 16
+--- after ''e'' automaton is in a non-accept state and might need to backup
+
+In <0>, after "0." automaton could accept ""."?[0-9]+{EXP}?" in state 22
+--- after ''e'' automaton is in a non-accept state and might need to backup
+
+=============================================================================
+ */
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <calculator.lex>
+// ==========================================================================
+//  Version:  1.2.2
+//  Machine:  小兰
+//  DateTime: 2018/8/14 22:39:26
+//  UserName: stern
+// ==========================================================================
+
+
+%namespace Test1.flex
+
+%using Test1;
+%using Test1.common;
+
+%option help, listing, summary, stack, minimize, parser, verbose, persistbuffer, unicode, compressNext, embedbuffers
+
+%{
+public override void yyerror(string format, params object[] args)
+{
+	System.Console.Error.WriteLine("Error: line {0}, col{1} - " + format, yyline, yycol, args);
+}
+%}
+
+/* 浮点数指数部分 */
+EXP		([Ee][-+]?[0-9]+)
+//---------^
+// Warning: Special case: "-" included as set class member
+// -------------------------------------------------------
+
+%%
+
+/* 单一字符操作符 */
+"+" |
+"-" |
+"*" |
+"/" |
+"=" |
+"|" |
+"," |
+";" |
+"(" |
+")" {return yytext[0];}
+
+/* 比较操作符,所有返回值都是CMP记号*/
+">" {yylval.fn = 1; return Tokens.CMP;}
+"<" {yylval.fn = 2; return Tokens.CMP;}
+"<>" {yylval.fn = 3; return Tokens.CMP;}
+"==" {yylval.fn = 4; return Tokens.CMP;}
+">=" {yylval.fn = 5; return Tokens.CMP;}
+"<=" {yylval.fn = 6; return Tokens.CMP;}
+
+/* 关键字 */
+"if"	{return Tokens.IF;}
+"then"	{return Tokens.THEN;}
+"else"	{return Tokens.ELSE;}
+"while"	{return Tokens.WHILE;}
+"do"	{return Tokens.DO;}
+"let"	{return Tokens.LET;}
+
+/* 内置函数 */
+"sqrt"	{yylval.fn = Bifs.B_SQRT; return Tokens.FUNC;}
+"exp"	{yylval.fn = Bifs.B_EXP; return Tokens.FUNC;}
+"log"	{yylval.fn = Bifs.B_LOG; return Tokens.FUNC;}
+"print"	{yylval.fn = Bifs.B_PRINT; return Tokens.FUNC;}
+
+/* 名字 */
+[a-zA-Z][a-zA-Z0-9]* {yylval.s = lookup(yytext); return Tokens.NAME;}
+
+[0-9]+"."[0-9]*{EXP}?	|
+"."?[0-9]+{EXP}?		{double.TryParse (yytext, NumberStyles.Float, CultureInfo.CurrentCulture, out yylval.d); return Tokens.NUMBER;}
+
+"//".*	{;}
+[ \t]	{;}/* 忽略空白字符 */
+
+\\\n { System.Console.Error.Write("c> ");} /* 忽略续行符 */
+
+\n	{return Tokens.EOL;}
+
+.	{ yyerror("Mystery character {3}", yytext);}
+%%// ==========================================================================
+

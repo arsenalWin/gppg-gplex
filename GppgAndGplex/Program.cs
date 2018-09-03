@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gppg_gplex
+namespace Test1
 {
     class Program
     {

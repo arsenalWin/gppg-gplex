@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F2569E51-4335-44EC-AB9F-77BB8FD8191F}</ProjectGuid>
+    <ProjectGuid>{DEC726A5-7BB8-4F33-9DDB-42CAD4DF4CF5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>gppg_gplex</RootNamespace>
-    <AssemblyName>gppg-gplex</AssemblyName>
+    <RootNamespace>Test1</RootNamespace>
+    <AssemblyName>Test1</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,11 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="common\Bifs.cs" />
+    <Compile Include="flex\calculator.cs" />
+    <Compile Include="flex\Lexer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="bsion\calculator.y" />
+    <None Include="flex\calculator.lex" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
