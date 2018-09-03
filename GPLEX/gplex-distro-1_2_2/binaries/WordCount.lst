@@ -1,0 +1,37 @@
+/*
+=============================================================================
+NFSA Summary for input file <wordcount.lex>
+=============================================================================
+Total NFSA states = 224
+Number of Start Conditions = 1
+Start condition INITIAL:
+  number of patterns = 5, number of nfsa states = 26, accept states = 5
+=============================================================================
+GPLEX: NFSA built.   30 msec
+=============================================================================
+GPLEX: DFSA built.   13 msec
+=============================================================================
+GPLEX: DFSA minimized.   17 msec
+=============================================================================
+GPLEX: Shortest strings found.    2 msec
+=============================================================================
+DFSA Summary
+=============================================================================
+Number of dfsa instances = 1
+Start condition INITIAL:
+  number of dfsa states = 12, number of accept states = 9
+=============================================================================
+GPLEX: C# file emitted.   63 msec
+=============================================================================
+GPLEX Summary
+=============================================================================
+Total number of states = 9, total accept states = 5, backup states = 1
+Original state number was 13, minimized machine has 9 states
+Nextstate table compression was 86.37%, 314 entries Vs 2,304
+
+Backup state report --- 
+In <0>, after "0" automaton could accept "{digits}" in state 3
+--- after ''.'' automaton is in a non-accept state and might need to backup
+
+=============================================================================
+ */
