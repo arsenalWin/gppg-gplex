@@ -1,2 +1,2 @@
-gplex "calculator.lex"
+gplex "calculator.lex" > "CalculatorScanner.cs"
 pause
