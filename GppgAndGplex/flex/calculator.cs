@@ -6,14 +6,13 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  小兰
-//  DateTime: 2018/9/3 22:55:57
+//  DateTime: 2018/9/11 23:53:39
 //  UserName: stern
-//  GPLEX input file <calculator.lex - 2018/8/14 22:39:22>
+//  GPLEX input file <calculator.lex - 2018/9/11 23:53:34>
 //  GPLEX frame file <embedded resource>
 //
-//  Option settings: unicode, verbose, parser, stack, minimize
-//  Option settings: classes, compressMap, compressNext, persistBuffer, embedbuffers
-//  Fallback code page: Target machine default
+//  Option settings: unicode, verbose, parser, noFiles, stack, minimize
+//  Option settings: classes, compressMap, compressNext, embedbuffers
 //
 
 //
@@ -23,6 +22,7 @@
 //
 #define BACKUP
 #define STACK
+#define NOFILES
 #define PERSIST
 
 using System;
@@ -136,7 +136,7 @@ namespace Test1.flex
 #region user code
 public override void yyerror(string format, params object[] args)
 {
-	System.Console.Error.WriteLine("Error: line {0}, col{1} - " + format, yyline, yycol, args);
+	System.Console.Error.WriteLine("Error: line {0}, col{1} - {2}" + format, yyline, yycol, args);
 }
 /* 浮点数指数部分 */
 #endregion user code
@@ -777,7 +777,7 @@ int NextState() {
                 return (int)Tokens.EOF;
             break;
         case 1: // Recognized '\n',	Shortest string ""
-return Tokens.EOL;
+return (int) Tokens.EOL;
             break;
         case 2: // Recognized '"+"',	Shortest string "+"
         case 3: // Recognized '"/"',	Shortest string "/"
@@ -785,10 +785,10 @@ return Tokens.EOL;
 return yytext[0];
             break;
         case 5: // Recognized '">"',	Shortest string ">"
-yylval.fn = 1; return Tokens.CMP;
+yylval.fn = 1; return (int) Tokens.CMP;
             break;
         case 6: // Recognized '"<"',	Shortest string "<"
-yylval.fn = 2; return Tokens.CMP;
+yylval.fn = 2; return (int) Tokens.CMP;
             break;
         case 7: // Recognized '[a-zA-Z][a-zA-Z0-9]*',	Shortest string "i"
         case 8: // Recognized '[a-zA-Z][a-zA-Z0-9]*',	Shortest string "f"
@@ -814,17 +814,17 @@ yylval.fn = 2; return Tokens.CMP;
         case 43: // Recognized '[a-zA-Z][a-zA-Z0-9]*',	Shortest string "els"
         case 45: // Recognized '[a-zA-Z][a-zA-Z0-9]*',	Shortest string "th"
         case 46: // Recognized '[a-zA-Z][a-zA-Z0-9]*',	Shortest string "the"
-yylval.s = lookup(yytext); return Tokens.NAME;
+yylval.s = Eval.lookup(yytext); return (int) Tokens.NAME;
             break;
         case 16: // Recognized '"."?[0-9]+{EXP}?',	Shortest string "0"
         case 22: // Recognized '"."?[0-9]+{EXP}?',	Shortest string "0."
         case 23: // Recognized '"."?[0-9]+{EXP}?',	Shortest string "0e0"
-double.TryParse (yytext, NumberStyles.Float, CultureInfo.CurrentCulture, out yylval.d); return Tokens.NUMBER;
+double.TryParse (yytext, NumberStyles.Float, CultureInfo.CurrentCulture, out yylval.d); return (int) Tokens.NUMBER;
             break;
         case 17: // Recognized '.',	Shortest string "."
         case 18: // Recognized '.',	Shortest string "\0"
         case 20: // Recognized '.',	Shortest string "\\"
-yyerror("Mystery character {3}", yytext);
+yyerror("Mystery character {1}", yytext);
             break;
         case 19: // Recognized '[ \t]',	Shortest string "\t"
 ;
@@ -833,46 +833,46 @@ yyerror("Mystery character {3}", yytext);
 System.Console.Error.Write("c> ");
             break;
         case 27: // Recognized '"print"',	Shortest string "print"
-yylval.fn = Bifs.B_PRINT; return Tokens.FUNC;
+yylval.fn = (int) Bifs.B_PRINT; return (int) Tokens.FUNC;
             break;
         case 28: // Recognized '"do"',	Shortest string "do"
-return Tokens.DO;
+return (int) Tokens.DO;
             break;
         case 32: // Recognized '"while"',	Shortest string "while"
-return Tokens.WHILE;
+return (int) Tokens.WHILE;
             break;
         case 35: // Recognized '"sqrt"',	Shortest string "sqrt"
-yylval.fn = Bifs.B_SQRT; return Tokens.FUNC;
+yylval.fn = (int) Bifs.B_SQRT; return (int) Tokens.FUNC;
             break;
         case 38: // Recognized '"log"',	Shortest string "log"
-yylval.fn = Bifs.B_LOG; return Tokens.FUNC;
+yylval.fn = (int) Bifs.B_LOG; return (int) Tokens.FUNC;
             break;
         case 39: // Recognized '"let"',	Shortest string "let"
-return Tokens.LET;
+return (int) Tokens.LET;
             break;
         case 42: // Recognized '"exp"',	Shortest string "exp"
-yylval.fn = Bifs.B_EXP; return Tokens.FUNC;
+yylval.fn = (int) Bifs.B_EXP; return (int) Tokens.FUNC;
             break;
         case 44: // Recognized '"else"',	Shortest string "else"
-return Tokens.ELSE;
+return (int) Tokens.ELSE;
             break;
         case 47: // Recognized '"then"',	Shortest string "then"
-return Tokens.THEN;
+return (int) Tokens.THEN;
             break;
         case 48: // Recognized '"if"',	Shortest string "if"
-return Tokens.IF;
+return (int) Tokens.IF;
             break;
         case 49: // Recognized '"<="',	Shortest string "<="
-yylval.fn = 6; return Tokens.CMP;
+yylval.fn = 6; return (int) Tokens.CMP;
             break;
         case 50: // Recognized '"<>"',	Shortest string "<>"
-yylval.fn = 3; return Tokens.CMP;
+yylval.fn = 3; return (int) Tokens.CMP;
             break;
         case 51: // Recognized '">="',	Shortest string ">="
-yylval.fn = 5; return Tokens.CMP;
+yylval.fn = 5; return (int) Tokens.CMP;
             break;
         case 52: // Recognized '"=="',	Shortest string "=="
-yylval.fn = 4; return Tokens.CMP;
+yylval.fn = 4; return (int) Tokens.CMP;
             break;
         case 53: // Recognized '"//".*',	Shortest string "//"
 ;

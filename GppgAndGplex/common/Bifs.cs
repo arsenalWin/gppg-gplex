@@ -21,7 +21,28 @@ namespace Test1.common
         public string Name { get; set; }
         public double Value { get; set; }
         public AbstractAst Func { get; set; } /* 函数体 */
-        public List<Symbol> SymbolList { get; set; } /* 虚拟参数列表 */
+        public SymList SymbolList { get; set; } /* 虚拟参数列表 */
+
+        public Symbol(string name, double value, AbstractAst func, SymList symList)
+        {
+            Name = name;
+            Value = value;
+            Func = func;
+            SymbolList = symList;
+        }
+    }
+
+    /* 符号列表,作为参数列表 */
+    public class SymList
+    {
+        public Symbol Sym { get; set; }
+        public SymList Next { get; set; }
+
+        public SymList(Symbol symbol, SymList symList)
+        {
+            Sym = symbol;
+            Next = symList;
+        }
     }
 
     /* 抽象语法树节点 */
@@ -50,6 +71,13 @@ namespace Test1.common
     {
         public AbstractAst L { get; set; } /* 参数列表 */
         public Bifs FuncType { get; set; }
+
+        public FnCall(int type, AbstractAst l)
+        {
+            NodeType = 'F';
+            FuncType = (Bifs)type;
+            L = l;
+        }
     }
 
     /* 类型 C */
@@ -57,20 +85,41 @@ namespace Test1.common
     {
         public AbstractAst L { get; set; } /* 参数列表 */
         public Symbol S { get; set; }
+
+        public UfnCall(Symbol s, AbstractAst l)
+        {
+            NodeType = 'C';
+            S = s;
+            L = l;
+        }
     }
 
     /* 类型 I 或者 W */
     public class Flow : AbstractAst
     {
-        public AbstractAst cond { get; set; } /* 条件 */
-        public AbstractAst tl { get; set; } /* then分支或者do语句 */
-        public AbstractAst el { get; set; } /* 可选的else分支 */
+        public AbstractAst Cond { get; set; } /* 条件 */
+        public AbstractAst Tl { get; set; } /* then分支或者do语句 */
+        public AbstractAst El { get; set; } /* 可选的else分支 */
+
+        public Flow(int nodeType, AbstractAst cond, AbstractAst tl, AbstractAst el)
+        {
+            NodeType = nodeType;
+            Cond = cond;
+            Tl = tl;
+            El = el;
+        }
     }
 
     /* 类型 K */
     public class Numval : AbstractAst
     {
         public double Number { get; set; }
+
+        public Numval(double d)
+        {
+            Number = d;
+            NodeType = 'K';
+        }
     }
 
     /* 类型 N */
@@ -84,5 +133,12 @@ namespace Test1.common
     {
         public Symbol S { get; set; }
         public AbstractAst V { get; set; }
+
+        public SymAsgn(Symbol s, AbstractAst v)
+        {
+            NodeType = '=';
+            S = s;
+            V = v;
+        }
     }
 }

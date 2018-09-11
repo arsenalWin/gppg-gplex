@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <calculator.y - 2018/9/3 22:40:47>
+//  GPPG error listing for yacc source file <calculator.y - 2018/9/4 22:15:51>
 // ==========================================================================
 //  Version:  1.5.2
 //  Machine:  小兰
-//  DateTime: 2018/9/3 22:55:45
+//  DateTime: 2018/9/4 22:16:14
 //  UserName: stern
 // ==========================================================================
 
@@ -42,25 +42,8 @@
 %start calclist
 
 %%
-// Error: NonTerminal symbol "explist" has no productions
 // Warning: NonTerminal symbol "explist" is unreachable
-// Warning: NonTerminal symbol "list" is unreachable
-// Error: NonTerminal symbol "calclist" has no productions
-// Error: NonTerminal symbol "symlist" has no productions
-// Warning: NonTerminal symbol "symlist" is unreachable
-// Warning: NonTerminal symbol "stmt" is unreachable
-// Warning: Terminating explist fixes the following size-1 NonTerminal set
-   // {explist}
-// Warning: Terminating exp fixes the following size-2 NonTerminal set
-   // {exp, stmt}
-// Error: There are 6 non-terminating NonTerminal Symbols
-   //  {exp, stmt, explist, symlist, calclist, $accept}
-// Warning: NonTerminal symbol "exp" is unreachable
-// Warning: Terminating calclist fixes the following size-2 NonTerminal set
-   // {calclist, $accept}
-// Warning: Terminating symlist fixes the following size-1 NonTerminal set
-   // {symlist}
-// ------------------------------------------------------------------------
+// ----------------------------------------------------
 stmt: IF exp THEN list	{ $$ = new Flow('I', $2, $4, null); }
 	| IF exp THEN list ELSE list	{ $$ = new Flow('I', $2, $4, $6); }
 	| WHILE exp DO list		{ $$ = new Flow('W', $2, $4, null); }
@@ -79,5 +62,26 @@ list: /* 空 */ { $$ = null; }
 
 exp: exp CMP exp { $$ = new Ast($2,$1,$3); }
    | exp '+' exp { $$ = new Ast('+',$1,$3); }
+   | exp '-' exp { $$ = new Ast('-',$1,$3); }
+   | NUMBER { $$ = new Numval($1); }
+;
+
+explist:  exp
+	   |  exp ',' explist { $$ = new Ast('L',$1,$3); }
+;
+
+symlist:  NAME  { $$ = new SymList($1, null); }
+       |  NAME ',' symlist { $$ = new SymList($1, $3); }
+;
+
+calclist:  /* 空 */
+        |  calclist stmt EOL  {
+		       Console.WriteLine("= {}", eval($2));
+		   }
+		|  calclist LET NAME '(' symlist ')' '=' list EOL {
+		       dodef($3, $5, $8);
+			   Console.WriteLine("Defined ", $3.Name);
+		   }
+		|  calclist error EOL { yyerrok; Console.WriteLine("> "); }
 ;// ==========================================================================
 

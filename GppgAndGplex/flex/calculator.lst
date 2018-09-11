@@ -7,11 +7,11 @@ Number of Start Conditions = 1
 Start condition INITIAL:
   number of patterns = 34, number of nfsa states = 130, accept states = 34
 =============================================================================
-GPLEX: NFSA built.   15 msec
+GPLEX: NFSA built.   13 msec
 =============================================================================
-GPLEX: DFSA built.    6 msec
+GPLEX: DFSA built.   10 msec
 =============================================================================
-GPLEX: DFSA minimized.    0 msec
+GPLEX: DFSA minimized.   12 msec
 =============================================================================
 GPLEX: Shortest strings found.    0 msec
 =============================================================================
@@ -21,7 +21,7 @@ Number of dfsa instances = 1
 Start condition INITIAL:
   number of dfsa states = 74, number of accept states = 69
 =============================================================================
-GPLEX: C# file emitted.   15 msec
+GPLEX: C# file emitted.   22 msec
 =============================================================================
 GPLEX Summary
 =============================================================================
@@ -50,7 +50,7 @@ In <0>, after "0." automaton could accept ""."?[0-9]+{EXP}?" in state 22
 // ==========================================================================
 //  Version:  1.2.2
 //  Machine:  小兰
-//  DateTime: 2018/9/3 22:55:57
+//  DateTime: 2018/9/11 23:53:39
 //  UserName: stern
 // ==========================================================================
 
@@ -60,12 +60,12 @@ In <0>, after "0." automaton could accept ""."?[0-9]+{EXP}?" in state 22
 %using Test1;
 %using Test1.common;
 
-%option help, listing, summary, stack, minimize, parser, verbose, persistbuffer, unicode, compressNext, embedbuffers
+%option help, listing, summary, stack, minimize, parser, verbose, persistbuffer, unicode, compressNext, embedbuffers, noFiles
 
 %{
 public override void yyerror(string format, params object[] args)
 {
-	System.Console.Error.WriteLine("Error: line {0}, col{1} - " + format, yyline, yycol, args);
+	System.Console.Error.WriteLine("Error: line {0}, col{1} - {2}" + format, yyline, yycol, args);
 }
 %}
 
@@ -90,40 +90,40 @@ EXP		([Ee][-+]?[0-9]+)
 ")" {return yytext[0];}
 
 /* 比较操作符,所有返回值都是CMP记号*/
-">" {yylval.fn = 1; return Tokens.CMP;}
-"<" {yylval.fn = 2; return Tokens.CMP;}
-"<>" {yylval.fn = 3; return Tokens.CMP;}
-"==" {yylval.fn = 4; return Tokens.CMP;}
-">=" {yylval.fn = 5; return Tokens.CMP;}
-"<=" {yylval.fn = 6; return Tokens.CMP;}
+">" {yylval.fn = 1; return (int) Tokens.CMP;}
+"<" {yylval.fn = 2; return (int) Tokens.CMP;}
+"<>" {yylval.fn = 3; return (int) Tokens.CMP;}
+"==" {yylval.fn = 4; return (int) Tokens.CMP;}
+">=" {yylval.fn = 5; return (int) Tokens.CMP;}
+"<=" {yylval.fn = 6; return (int) Tokens.CMP;}
 
 /* 关键字 */
-"if"	{return Tokens.IF;}
-"then"	{return Tokens.THEN;}
-"else"	{return Tokens.ELSE;}
-"while"	{return Tokens.WHILE;}
-"do"	{return Tokens.DO;}
-"let"	{return Tokens.LET;}
+"if"	{return (int) Tokens.IF;}
+"then"	{return (int) Tokens.THEN;}
+"else"	{return (int) Tokens.ELSE;}
+"while"	{return (int) Tokens.WHILE;}
+"do"	{return (int) Tokens.DO;}
+"let"	{return (int) Tokens.LET;}
 
 /* 内置函数 */
-"sqrt"	{yylval.fn = Bifs.B_SQRT; return Tokens.FUNC;}
-"exp"	{yylval.fn = Bifs.B_EXP; return Tokens.FUNC;}
-"log"	{yylval.fn = Bifs.B_LOG; return Tokens.FUNC;}
-"print"	{yylval.fn = Bifs.B_PRINT; return Tokens.FUNC;}
+"sqrt"	{yylval.fn = (int) Bifs.B_SQRT; return (int) Tokens.FUNC;}
+"exp"	{yylval.fn = (int) Bifs.B_EXP; return (int) Tokens.FUNC;}
+"log"	{yylval.fn = (int) Bifs.B_LOG; return (int) Tokens.FUNC;}
+"print"	{yylval.fn = (int) Bifs.B_PRINT; return (int) Tokens.FUNC;}
 
 /* 名字 */
-[a-zA-Z][a-zA-Z0-9]* {yylval.s = lookup(yytext); return Tokens.NAME;}
+[a-zA-Z][a-zA-Z0-9]* {yylval.s = Eval.lookup(yytext); return (int) Tokens.NAME;}
 
 [0-9]+"."[0-9]*{EXP}?	|
-"."?[0-9]+{EXP}?		{double.TryParse (yytext, NumberStyles.Float, CultureInfo.CurrentCulture, out yylval.d); return Tokens.NUMBER;}
+"."?[0-9]+{EXP}?		{double.TryParse (yytext, NumberStyles.Float, CultureInfo.CurrentCulture, out yylval.d); return (int) Tokens.NUMBER;}
 
 "//".*	{;}
 [ \t]	{;}/* 忽略空白字符 */
 
 \\\n { System.Console.Error.Write("c> ");} /* 忽略续行符 */
 
-\n	{return Tokens.EOL;}
+\n	{return (int) Tokens.EOL;}
 
-.	{ yyerror("Mystery character {3}", yytext);}
+.	{ yyerror("Mystery character {1}", yytext);}
 %%// ==========================================================================
 
